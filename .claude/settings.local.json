@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm outdated)",
+      "Bash(if [ -f \"tsconfig.json\" ])",
+      "Bash(then echo \"✅ TypeScript config found\")",
+      "Bash(grep:*)",
+      "Bash(else echo \"⚠️  No TypeScript config found\")",
+      "Bash(fi)",
+      "Bash(echo:*)",
+      "Bash(tree:*)",
+      "Bash(find:*)",
+      "Bash(npm run:*)",
+      "Bash(if [ -d \"coverage\" ])",
+      "Bash(then echo \"📁 Coverage report generated in coverage/ directory\")",
+      "Bash(else echo \"⚠️  No coverage directory found - coverage may not be configured\")"
+    ],
+    "deny": []
+  }
+}
