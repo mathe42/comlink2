@@ -6,6 +6,7 @@ Run all tests (unit and e2e) with comprehensive reporting.
 - Runs unit tests with Vitest
 - Runs e2e tests with Playwright
 - Generates coverage reports
+- Try to fix all failing tests.
 
 ```bash
 echo "🧪 Running all tests..."

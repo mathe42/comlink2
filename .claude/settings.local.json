@@ -14,9 +14,9 @@
       "Bash(tree:*)",
       "Bash(find:*)",
       "Bash(npm run:*)",
-      "Bash(if [ -d \"coverage\" ])",
-      "Bash(then echo \"📁 Coverage report generated in coverage/ directory\")",
-      "Bash(else echo \"⚠️  No coverage directory found - coverage may not be configured\")"
+      "Bash(npm test)",
+      "Bash(time npm run build)",
+      "Bash(npx vitest run:*)"
     ],
     "deny": []
   }

@@ -1,12 +1,33 @@
-export function greet(name: string): string {
-  return `Hello, ${name}!`
-}
+export type { PostMessageEndpoint, PostMessageEndpointString, StreamEndpoint } from './endpoint'
+export { streamToPostMessage, createChannel, postMessageToStream, connectEndpoints, connectStreams } from './endpoint'
 
-export function add(a: number, b: number): number {
-  return a + b
-}
+// Web API wrappers
+export { 
+  dataChannelToStream,
+  dataChannelToPostMessage,
+  webSocketToPostMessage
+} from './endpointWeb'
 
-export default {
-  greet,
-  add
-}
+// Remote Object API (planned)
+export type {
+  RemoteApi,
+  RemoteHandler,
+  RemoteObject,
+  RemoteRequest,
+  RemoteResponse,
+  RemoteError,
+  RemoteOptions,
+  RemoteApiConfig,
+  RemoteObjectInfo,
+  ObjectReferenceManager,
+  RemoteEvent,
+  RemoteEventListener,
+  RemoteEventEmitter
+} from './remoteObject'
+
+export {
+  RemoteOperationType,
+  MessageType,
+  SerializationStrategy,
+  RemoteEventType
+} from './remoteObject'
