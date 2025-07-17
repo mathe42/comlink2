@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'comlink2',
   description: 'A TypeScript communication library for cross-context communication',
+  base: '/comlink2/', // GitHub Pages base path
   
   themeConfig: {
     nav: [
@@ -47,12 +48,12 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/your-username/comlink2' }
+      { icon: 'github', link: 'https://github.com/mathe42/comlink2' }
     ],
 
     footer: {
       message: 'Released under the MIT License (non-commercial) / Commercial License available.',
-      copyright: 'Copyright © 2024 comlink2'
+      copyright: 'Copyright © 2024 Sebastian (@mathe42)'
     }
   }
 })
