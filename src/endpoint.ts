@@ -49,7 +49,7 @@ export function streamToPostMessage(ep: StreamEndpoint): PostMessageEndpoint {
   }
 }
 
-export function createChannel(endpoint: PostMessageEndpoint, channelName: string): PostMessageEndpoint {
+export function createChannel(endpoint: PostMessageEndpoint, channelName: string | number): PostMessageEndpoint {
   const channelListeners = new Set<Listener<any>>()
   
   // Listen for messages on the main endpoint and filter by channel
@@ -146,6 +146,45 @@ export function connectStreams(streamA: StreamEndpoint, streamB: StreamEndpoint)
   return () => {
     pipeAtoB.catch(() => {}) // Ignore errors from cancelled pipe
     pipeBtoA.catch(() => {}) // Ignore errors from cancelled pipe
+  }
+}
+
+export interface LoggingOptions {
+  prefix?: string
+  logIncoming?: boolean
+  logOutgoing?: boolean
+  logger?: (message: string, data?: any) => void
+}
+
+export function withLogging(endpoint: PostMessageEndpoint, options: LoggingOptions = {}): PostMessageEndpoint {
+  const {
+    prefix = 'PostMessage',
+    logIncoming = true,
+    logOutgoing = true,
+    logger = console.log
+  } = options
+
+  return {
+    postMessage(data) {
+      if (logOutgoing) {
+        logger(`${prefix} [OUT]:`, data)
+      }
+      endpoint.postMessage(data)
+    },
+    addEventListener(type, listener) {
+      if (type === 'message' && logIncoming) {
+        const loggingListener: Listener<any> = (event) => {
+          logger(`${prefix} [IN]:`, event.data)
+          listener(event)
+        }
+        endpoint.addEventListener(type, loggingListener)
+      } else {
+        endpoint.addEventListener(type, listener)
+      }
+    },
+    removeEventListener(type, listener) {
+      endpoint.removeEventListener(type, listener)
+    }
   }
 }
 

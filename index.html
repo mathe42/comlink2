@@ -3,117 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>comlink2 Test App</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f5f5f5;
-    }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    .test-section {
-      margin: 20px 0;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background-color: #fafafa;
-    }
-    .test-section h3 {
-      margin-top: 0;
-      color: #333;
-    }
-    input, button {
-      padding: 8px 12px;
-      margin: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .result {
-      margin-top: 10px;
-      padding: 10px;
-      background-color: #e7f3ff;
-      border-left: 4px solid #007bff;
-      border-radius: 4px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>comlink2 Test App</h1>
-    <p>Diese Web-App hilft bei der Entwicklung und dem Testen der comlink2 Bibliothek.</p>
-    
-    <div class="test-section">
-      <h3>Greet Funktion testen</h3>
-      <input type="text" id="nameInput" placeholder="Namen eingeben" value="Welt">
-      <button onclick="testGreet()">Grüßen</button>
-      <div id="greetResult" class="result" style="display: none;"></div>
-    </div>
-
-    <div class="test-section">
-      <h3>Add Funktion testen</h3>
-      <input type="number" id="num1" placeholder="Erste Zahl" value="5">
-      <input type="number" id="num2" placeholder="Zweite Zahl" value="3">
-      <button onclick="testAdd()">Addieren</button>
-      <div id="addResult" class="result" style="display: none;"></div>
-    </div>
-
-    <div class="test-section">
-      <h3>Library Information</h3>
-      <button onclick="showLibraryInfo()">Library Info anzeigen</button>
-      <div id="libraryInfo" class="result" style="display: none;"></div>
-    </div>
-  </div>
-
+  <title>comlink2 API Playground</title>
+  
   <script type="module">
-    import { greet, add } from './src/index.ts';
-    import comlink2 from './src/index.ts';
+    import { 
+      wrap, 
+      expose, 
+      streamToPostMessage, 
+      postMessageToStream,
+      createChannel,
+      connectEndpoints,
+      connectStreams,
+      withLogging
+    } from './src/index.js';
 
-    window.testGreet = function() {
-      const name = document.getElementById('nameInput').value;
-      const result = greet(name);
-      const resultDiv = document.getElementById('greetResult');
-      resultDiv.innerHTML = `<strong>Ergebnis:</strong> ${result}`;
-      resultDiv.style.display = 'block';
+
+    // Service der exposed wird
+    const testService = {
+      greet: (name) => `Hello ${name}!`,
+      calculate: (a, b) => a + b,
+      getData: async () => ({ 
+        timestamp: Date.now(), 
+        random: Math.random(),
+        message: 'Data from remote service'
+      }),
+      throwError: () => { 
+        throw new Error('Test error from remote service') 
+      },
+      processArray: (arr) => arr.map(x => x * 2),
+      createUser: function(name, email) {
+        return { 
+          id: Math.random().toString(36), 
+          name, 
+          email, 
+          created: new Date().toISOString() 
+        }
+      },
+      a: class {
+        fn() {
+          console.log('test')
+        }
+        cb(c) {
+          c()
+        }
+      }
     };
 
-    window.testAdd = function() {
-      const num1 = parseFloat(document.getElementById('num1').value) || 0;
-      const num2 = parseFloat(document.getElementById('num2').value) || 0;
-      const result = add(num1, num2);
-      const resultDiv = document.getElementById('addResult');
-      resultDiv.innerHTML = `<strong>Ergebnis:</strong> ${num1} + ${num2} = ${result}`;
-      resultDiv.style.display = 'block';
-    };
+    const mc = new MessageChannel()
+    mc.port1.start()
+    mc.port2.start()
+    const d = wrap(withLogging(mc.port1))
+    expose(testService, mc.port2)
+    
 
-    window.showLibraryInfo = function() {
-      const resultDiv = document.getElementById('libraryInfo');
-      resultDiv.innerHTML = `
-        <strong>Verfügbare Funktionen:</strong><br>
-        • greet(name: string): string<br>
-        • add(a: number, b: number): number<br><br>
-        <strong>Default Export:</strong> Objekt mit greet und add Funktionen<br>
-        <strong>Beispiel:</strong> comlink2.greet("Test") = "${comlink2.greet("Test")}"
-      `;
-      resultDiv.style.display = 'block';
-    };
+    
+    
+    // Oder mit async/await:
+    ;(async () => {
+      try {
+        const greeting = await d.greet('Sebastian')
+        console.log('Async greet result:', greeting)
+        
+        const sum = await d.calculate(5, 3)
+        console.log('Calculate result:', sum)
+        
+        const data = await d.getData()
+        console.log('Data result:', data)
+        
+        const g = await d.greet
+        console.log(g())
 
-    console.log('comlink2 Test App geladen');
-    console.log('Verfügbare Funktionen:', { greet, add, comlink2 });
+        // Class Test
+        // const instance = await new d.a()
+        // await instance.fn()
+        // console.log('Class instance:', instance)
+
+        // instance.cb(() => console.log('dhgdhg'))
+        
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    })()
+
   </script>
 </body>
 </html>

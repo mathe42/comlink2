@@ -1,5 +1,5 @@
-export type { PostMessageEndpoint, PostMessageEndpointString, StreamEndpoint } from './endpoint'
-export { streamToPostMessage, createChannel, postMessageToStream, connectEndpoints, connectStreams } from './endpoint'
+export type { PostMessageEndpoint, PostMessageEndpointString, StreamEndpoint, LoggingOptions } from './endpoint'
+export { streamToPostMessage, createChannel, postMessageToStream, connectEndpoints, connectStreams, withLogging } from './endpoint'
 
 // Web API wrappers
 export { 
@@ -8,26 +8,11 @@ export {
   webSocketToPostMessage
 } from './endpointWeb'
 
-// Remote Object API (planned)
-export type {
-  RemoteApi,
-  RemoteHandler,
-  RemoteObject,
-  RemoteRequest,
-  RemoteResponse,
-  RemoteError,
-  RemoteOptions,
-  RemoteApiConfig,
-  RemoteObjectInfo,
-  ObjectReferenceManager,
-  RemoteEvent,
-  RemoteEventListener,
-  RemoteEventEmitter
+// Remote Object API
+export {
+  wrap,
+  expose
 } from './remoteObject'
 
-export {
-  RemoteOperationType,
-  MessageType,
-  SerializationStrategy,
-  RemoteEventType
-} from './remoteObject'
+// Remote Object Types
+export type { Wrapped } from './remoteTypes'

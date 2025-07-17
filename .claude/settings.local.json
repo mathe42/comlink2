@@ -16,7 +16,18 @@
       "Bash(npm run:*)",
       "Bash(npm test)",
       "Bash(time npm run build)",
-      "Bash(npx vitest run:*)"
+      "Bash(npx vitest run:*)",
+      "Bash(npm test:*)",
+      "Bash(if [ -d \"coverage\" ])",
+      "Bash(then echo \"📁 Coverage report generated in coverage/ directory\")",
+      "Bash(else echo \"⚠️  No coverage directory found - coverage may not be configured\")",
+      "Bash(ls:*)",
+      "Bash(rm:*)",
+      "Bash(npx tsc:*)",
+      "Bash(if [ -d \"dist\" ])",
+      "Bash(then echo -e \"\\n📦 Bundle size analysis:\")",
+      "Bash(else echo \"⚠️  No dist directory found\")",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }

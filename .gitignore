@@ -7,6 +7,10 @@ dist/
 build/
 *.tsbuildinfo
 
+# VitePress documentation build
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
 # Coverage reports
 coverage/
 .nyc_output/

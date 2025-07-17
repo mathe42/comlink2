@@ -1,471 +1,269 @@
-import type { PostMessageEndpoint } from './endpoint'
+import { createChannel, type PostMessageEndpoint } from './endpoint'
 
-/**
- * Remote Object API - Cross-realm object manipulation
- * 
- * This module provides a high-level API for manipulating JavaScript objects,
- * calling functions, and instantiating classes across different execution contexts
- * (Workers, iframes, ServiceWorkers, etc.) using PostMessage communication.
- * 
- * @example
- * ```typescript
- * // In main thread
- * const worker = new Worker('worker.js')
- * const remoteApi = createRemoteApi(worker)
- * 
- * // Call remote function
- * const result = await remoteApi.call('calculateSum', [1, 2, 3])
- * 
- * // Create remote class instance
- * const remoteCalc = await remoteApi.createInstance('Calculator', [])
- * const sum = await remoteCalc.add(5, 10)
- * 
- * // Get/set remote variables
- * await remoteApi.set('globalConfig', { debug: true })
- * const config = await remoteApi.get('globalConfig')
- * ```
- */
-
-// ============================================================================
-// Types and Enums
-// ============================================================================
-
-/**
- * Types of operations that can be performed on remote objects
- */
-export enum RemoteOperationType {
-  GET = 'get',
-  SET = 'set',
-  CALL = 'call',
-  CREATE_INSTANCE = 'createInstance',
-  GET_PROPERTY = 'getProperty',
-  SET_PROPERTY = 'setProperty',
-  CALL_METHOD = 'callMethod',
-  DELETE_PROPERTY = 'deleteProperty',
-  ENUMERATE_PROPERTIES = 'enumerateProperties'
-}
-
-/**
- * Message types for remote communication protocol
- */
-export enum MessageType {
-  REQUEST = 'request',
-  RESPONSE = 'response',
-  ERROR = 'error',
-  RELEASE = 'release'
-}
-
-/**
- * Serialization strategies for different data types
- */
-export enum SerializationStrategy {
-  JSON = 'json',
-  STRUCTURED_CLONE = 'structuredClone',
-  FUNCTION_STRING = 'functionString',
-  OBJECT_REFERENCE = 'objectReference'
-}
-
-/**
- * Request message structure for remote operations
- */
-export interface RemoteRequest {
-  id: string
-  type: MessageType.REQUEST
-  operation: RemoteOperationType
-  target: string
-  args?: any[]
-  property?: string
-  value?: any
-  options?: RemoteOptions
-}
-
-/**
- * Response message structure
- */
-export interface RemoteResponse {
-  id: string
-  type: MessageType.RESPONSE
-  result?: any
-  error?: string
-  isProxy?: boolean
-}
-
-/**
- * Error message structure
- */
-export interface RemoteError {
-  id: string
-  type: MessageType.ERROR
-  error: string
-  stack?: string
-}
-
-/**
- * Options for remote operations
- */
-export interface RemoteOptions {
-  timeout?: number
-  serialization?: SerializationStrategy
-  transferable?: Transferable[]
-  keepAlive?: boolean
-}
-
-/**
- * Configuration for remote API
- */
-export interface RemoteApiConfig {
-  timeout: number
-  enableProxy: boolean
-  enableFunctionSerialization: boolean
-  enableClassInstantiation: boolean
-  maxObjectReferences: number
-}
-
-/**
- * Metadata about remote objects
- */
-export interface RemoteObjectInfo {
-  id: string
-  type: string
-  properties: string[]
-  methods: string[]
-  isClass: boolean
-  isFunction: boolean
-}
-
-// ============================================================================
-// Core Remote API
-// ============================================================================
-
-/**
- * Creates a remote API for cross-realm object manipulation
- */
-export function createRemoteApi(endpoint: PostMessageEndpoint, config?: Partial<RemoteApiConfig>): RemoteApi {
-  // TODO: Implementation
-  throw new Error('Not implemented')
-}
-
-/**
- * Creates a remote object handler that responds to remote API calls
- */
-export function createRemoteHandler(endpoint: PostMessageEndpoint, config?: Partial<RemoteApiConfig>): RemoteHandler {
-  // TODO: Implementation
-  throw new Error('Not implemented')
-}
-
-/**
- * Main interface for remote object manipulation
- */
-export interface RemoteApi {
-  /**
-   * Get a global variable from the remote realm
-   */
-  get(name: string, options?: RemoteOptions): Promise<any>
+// Security assertion functions
+function assertValidKeyChain(keyChain: unknown): asserts keyChain is string[] {
+  if (!Array.isArray(keyChain)) {
+    throw new Error('Invalid keyChain: must be an array');
+  }
   
-  /**
-   * Set a global variable in the remote realm
-   */
-  set(name: string, value: any, options?: RemoteOptions): Promise<void>
+  if (keyChain.some(key => typeof key !== 'string' || key.includes('__proto__') || key.includes('prototype') || key.includes('constructor'))) {
+    throw new Error('Invalid keyChain: contains unsafe property names');
+  }
+}
+
+function assertValidRPCCall(data: unknown): asserts data is sRPCCall {
+  if (!data || typeof data !== 'object') {
+    throw new Error('Invalid RPC call: not an object');
+  }
   
-  /**
-   * Call a global function in the remote realm
-   */
-  call(functionName: string, args?: any[], options?: RemoteOptions): Promise<any>
+  const d = data as any;
+  if (typeof d.id === 'undefined' || !d.type) {
+    throw new Error('Invalid RPC call: missing id or type');
+  }
   
-  /**
-   * Create an instance of a class in the remote realm
-   */
-  createInstance(className: string, args?: any[], options?: RemoteOptions): Promise<RemoteObject>
+  assertValidKeyChain(d.keyChain);
   
-  /**
-   * Get information about available objects in the remote realm
-   */
-  introspect(target?: string): Promise<RemoteObjectInfo>
+  if ((d.type === 'call' || d.type === 'construct') && !Array.isArray(d.args)) {
+    throw new Error('Invalid RPC call: args must be an array');
+  }
+}
+
+function assertValidRPCResponse(data: unknown): asserts data is sRPCResponse {
+  if (!data || typeof data !== 'object') {
+    throw new Error('Invalid RPC response: not an object');
+  }
   
-  /**
-   * Release resources and cleanup
-   */
-  destroy(): void
+  const d = data as any;
+  if (typeof d.id === 'undefined' || d.type !== 'response') {
+    throw new Error('Invalid RPC response: missing id or invalid type');
+  }
 }
 
-/**
- * Handler interface for responding to remote API calls
- */
-export interface RemoteHandler {
-  /**
-   * Register an object to be accessible remotely
-   */
-  expose(name: string, object: any): void
+function assertIsFunction(target: unknown, name: string): asserts target is Function {
+  if (typeof target !== 'function') {
+    throw new Error(`Target '${name}' is not a function`);
+  }
+}
+
+function assertPropertyExists(obj: any, property: string): void {
+  if (!obj || typeof obj !== 'object') {
+    throw new Error(`Cannot access property '${property}' on non-object`);
+  }
   
-  /**
-   * Unregister a remote object
-   */
-  unexpose(name: string): void
-  
-  /**
-   * Start handling remote requests
-   */
-  start(): void
-  
-  /**
-   * Stop handling remote requests
-   */
-  stop(): void
+  if (!Object.prototype.hasOwnProperty.call(obj, property)) {
+    throw new Error(`Property '${property}' not found or not accessible`);
+  }
 }
 
-// ============================================================================
-// Remote Object Proxy
-// ============================================================================
+type sRPCData = { type: 'any', data: any } | { type: 'wraped', id: string | number };
+type sRPCCall = (({ id: number, keyChain: string[] }) & ({ type: 'await' } | { type: 'construct' | 'call', args: sRPCData[] }))
 
-/**
- * Proxy interface for remote objects
- */
-export interface RemoteObject {
-  /**
-   * Get a property from the remote object
-   */
-  get(property: string, options?: RemoteOptions): Promise<any>
-  
-  /**
-   * Set a property on the remote object
-   */
-  set(property: string, value: any, options?: RemoteOptions): Promise<void>
-  
-  /**
-   * Call a method on the remote object
-   */
-  call(method: string, args?: any[], options?: RemoteOptions): Promise<any>
-  
-  /**
-   * Delete a property from the remote object
-   */
-  delete(property: string, options?: RemoteOptions): Promise<boolean>
-  
-  /**
-   * Get all enumerable properties of the remote object
-   */
-  enumerate(options?: RemoteOptions): Promise<string[]>
-  
-  /**
-   * Release the remote object reference
-   */
-  release(): void
-  
-  /**
-   * Get object metadata
-   */
-  getInfo(): Promise<RemoteObjectInfo>
+type sRPCResponse = { id: number, type: 'response', data: sRPCData }
+
+function mapHelper<K, T>(m: Map<K, T>, key: K, data: () => T) {
+  if (m.has(key)) {
+    return m.get(key)
+  }
+
+  const o = data()
+  m.set(key, o)
+  return o
 }
 
-/**
- * Creates a proxy for a remote object
- */
-export function createRemoteObjectProxy(api: RemoteApi, objectId: string): RemoteObject {
-  // TODO: Implementation
-  throw new Error('Not implemented')
+
+let uniqueInRealmId = 0;
+function getId() {
+  if (uniqueInRealmId > Number.MAX_SAFE_INTEGER - 1000) {
+    return crypto.randomUUID()
+  }
+  uniqueInRealmId++;
+  return uniqueInRealmId;
 }
 
-/**
- * Creates a JavaScript Proxy that automatically forwards operations to remote object
- */
-export function createAutoProxy(remoteObject: RemoteObject): any {
-  // TODO: Implementation - creates a native JS Proxy
-  throw new Error('Not implemented')
+let markedObj = new WeakSet<any>()
+
+
+function wrapArgs(args: any[], ep: PostMessageEndpoint): sRPCData[] {
+  return args.map((arg) => wrapArg(arg, ep))
 }
 
-// ============================================================================
-// Serialization and Transfer
-// ============================================================================
+function wrapArg(data: unknown, ep: PostMessageEndpoint, wrap = false): sRPCData {
+  if (typeof data === 'function') {
+    wrap = true;
+  } else if (data && typeof data === 'object' && !Array.isArray(data) && data !== null) {
+    try {
+      wrap = Object.values(data).some((v) => typeof v === 'function')
+    } catch {
+      // Handle objects that don't support Object.values
+      wrap = false;
+    }
+  } else if (markedObj.has(data)) {
+    wrap = true
+  }
 
-/**
- * Serializes data for transfer across realms
- */
-export function serialize(data: any, strategy: SerializationStrategy): any {
-  // TODO: Implementation
-  throw new Error('Not implemented')
+  if (wrap) {
+    const id = getId();
+
+    const channelEp = createChannel(ep, id)
+    expose(data, channelEp)
+
+    return { type: 'wraped', id }
+  } else {
+    return { type: 'any', data }
+  }
 }
 
-/**
- * Deserializes data received from another realm
- */
-export function deserialize(data: any, strategy: SerializationStrategy): any {
-  // TODO: Implementation
-  throw new Error('Not implemented')
+function unwrapArg(data: sRPCData, ep: PostMessageEndpoint) {
+  if (data.type === 'any') {
+    return data.data
+  } else if (data.type === 'wraped') {
+    const id = data.id
+
+    const channelEp = createChannel(ep, id)
+    return wrap(channelEp)
+  }
+
 }
 
-/**
- * Checks if a value can be transferred using structured clone
- */
-export function isStructuredCloneable(value: any): boolean {
-  // TODO: Implementation
-  throw new Error('Not implemented')
+const promiseMap = new Map<number | string, { res: (data: any) => void, rej: (err: any) => void }>()
+function createPromise(id: number | string) {
+  return new Promise((res, rej) => {
+    promiseMap.set(id, { res, rej })
+  })
 }
 
-/**
- * Extracts transferable objects from a value
- */
-export function extractTransferables(value: any): Transferable[] {
-  // TODO: Implementation
-  throw new Error('Not implemented')
+export function wrap(ep: PostMessageEndpoint) {
+  ep.addEventListener('message', ev => {
+    if (ev.data && !ev.data.channel) {
+      try {
+        // Das ist für mich
+        assertValidRPCResponse(ev.data);
+        const d: sRPCResponse =   ev.data
+
+        const res = unwrapArg(d.data, ep)
+        const p = promiseMap.get(d.id)
+
+        if (p) {
+          p.res(res)
+          promiseMap.delete(d.id)
+        }
+      } catch (error) {
+        console.error('Error processing RPC response:', error);
+      }
+    }
+  })
+
+
+  function createProxy(keyChain: string[] = []) {
+    const getters = new Map<string, any>()
+
+    return new Proxy(class { }, {
+      get(_, p) {
+        if (typeof p === 'symbol') {
+          return null;
+        }
+
+        return mapHelper(getters, p, () => createProxy([...keyChain, p]))
+      },
+      apply(_, __, args) {
+        if (keyChain[keyChain.length - 1] == 'then') {
+          const id = getId()
+          const p = createPromise(id)
+
+          ep.postMessage({ id, type: 'await', keyChain: keyChain.slice(0, keyChain.length - 1) } as sRPCCall)
+
+          return p.then(...args);
+        } else {
+          const id = getId()
+          const p = createPromise(id)
+
+          ep.postMessage({ id, type: 'call', keyChain: keyChain, args: wrapArgs(args, ep) } as sRPCCall)
+
+          return p;
+        }
+      },
+      construct(_, args) {
+        const id = getId()
+        const p = createPromise(id)
+
+        ep.postMessage({ id, type: 'construct', keyChain: keyChain, args: wrapArgs(args, ep) } as sRPCCall)
+
+        return p;
+      }
+    })
+  }
+
+  return createProxy()
 }
 
-/**
- * Converts a function to a string for remote execution
- */
-export function serializeFunction(fn: Function): string {
-  // TODO: Implementation
-  throw new Error('Not implemented')
+function getKeyChain(obj: any, keyChain: string[]) {
+  assertValidKeyChain(keyChain);
+
+  let currentObject = obj;
+
+  for (let i = 0; i < keyChain.length; i++) {
+    const p = keyChain[i];
+    assertPropertyExists(currentObject, p);
+    currentObject = currentObject[p];
+  }
+
+  return currentObject
 }
 
-/**
- * Reconstructs a function from a string
- */
-export function deserializeFunction(fnString: string): Function {
-  // TODO: Implementation
-  throw new Error('Not implemented')
-}
+export function expose(obj: any, ep: PostMessageEndpoint) {
+  ep.addEventListener('message', async ev => {
+    if (ev.data && !ev.data.channel) {
+      try {
+        // Das ist für mich
+        assertValidRPCCall(ev.data);
+        const d: sRPCCall = ev.data
 
-// ============================================================================
-// Object Reference Management
-// ============================================================================
+        if (d.type === 'await') {
+          const o = getKeyChain(obj, d.keyChain)
 
-/**
- * Manages object references across realms
- */
-export interface ObjectReferenceManager {
-  /**
-   * Create a reference to an object
-   */
-  createReference(object: any): string
-  
-  /**
-   * Get an object by its reference ID
-   */
-  getObject(id: string): any
-  
-  /**
-   * Release an object reference
-   */
-  releaseReference(id: string): void
-  
-  /**
-   * Get all active references
-   */
-  getActiveReferences(): string[]
-  
-  /**
-   * Clear all references
-   */
-  clearReferences(): void
-}
+          ep.postMessage({
+            id: d.id,
+            type: 'response',
+            data: wrapArg(o, ep)
+          } as sRPCResponse)
+        } else if (d.type === 'call') {
+          const fn = getKeyChain(obj, d.keyChain)
+          assertIsFunction(fn, 'call target');
 
-/**
- * Creates an object reference manager
- */
-export function createObjectReferenceManager(maxReferences?: number): ObjectReferenceManager {
-  // TODO: Implementation
-  throw new Error('Not implemented')
-}
+          const args = d.args.map(a => unwrapArg(a, ep))
+          const response = await fn(...args)
 
-// ============================================================================
-// Event System
-// ============================================================================
+          ep.postMessage({
+            id: d.id,
+            type: 'response',
+            data: wrapArg(response, ep)
+          } as sRPCResponse)
+        } else if (d.type === 'construct') {
+          const c = getKeyChain(obj, d.keyChain)
+          assertIsFunction(c, 'constructor target');
 
-/**
- * Event types for remote object system
- */
-export enum RemoteEventType {
-  OBJECT_CREATED = 'objectCreated',
-  OBJECT_RELEASED = 'objectReleased',
-  PROPERTY_CHANGED = 'propertyChanged',
-  METHOD_CALLED = 'methodCalled',
-  ERROR_OCCURRED = 'errorOccurred'
-}
+          const args = Array.isArray(d.args) ? d.args.map(a => unwrapArg(a, ep)) : [];
+          const i = new c(...args)
 
-/**
- * Event data structure
- */
-export interface RemoteEvent {
-  type: RemoteEventType
-  objectId?: string
-  property?: string
-  method?: string
-  args?: any[]
-  result?: any
-  error?: string
-  timestamp: number
-}
+          ep.postMessage({
+            id: d.id,
+            type: 'response',
+            data: wrapArg(i, ep, true)
+          } as sRPCResponse)
+        }
+      } catch (error: any) {
+        console.error('Error processing RPC call:', error);
 
-/**
- * Event listener type
- */
-export type RemoteEventListener = (event: RemoteEvent) => void
-
-/**
- * Event emitter for remote object events
- */
-export interface RemoteEventEmitter {
-  on(event: RemoteEventType, listener: RemoteEventListener): void
-  off(event: RemoteEventType, listener: RemoteEventListener): void
-  emit(event: RemoteEvent): void
-}
-
-/**
- * Creates an event emitter for remote object events
- */
-export function createRemoteEventEmitter(): RemoteEventEmitter {
-  // TODO: Implementation
-  throw new Error('Not implemented')
-}
-
-// ============================================================================
-// Utility Functions
-// ============================================================================
-
-/**
- * Generates a unique ID for requests and objects
- */
-export function generateId(): string {
-  // TODO: Implementation
-  throw new Error('Not implemented')
-}
-
-/**
- * Validates a remote operation request
- */
-export function validateRequest(request: RemoteRequest): boolean {
-  // TODO: Implementation
-  throw new Error('Not implemented')
-}
-
-/**
- * Creates a timeout promise for operations
- */
-export function createTimeoutPromise<T>(promise: Promise<T>, timeout: number): Promise<T> {
-  // TODO: Implementation
-  throw new Error('Not implemented')
-}
-
-/**
- * Checks if an object is a remote object proxy
- */
-export function isRemoteObject(obj: any): obj is RemoteObject {
-  // TODO: Implementation
-  throw new Error('Not implemented')
-}
-
-/**
- * Gets the type of a value for serialization decisions
- */
-export function getValueType(value: any): string {
-  // TODO: Implementation
-  throw new Error('Not implemented')
-}
-
-/**
- * Creates a deep clone of an object (fallback for structured clone)
- */
-export function deepClone(obj: any): any {
-  // TODO: Implementation
-  throw new Error('Not implemented')
+        try {
+          ep.postMessage({
+            id: ev.data?.id,
+            type: 'error',
+            error: error.message
+          });
+        } catch (sendError) {
+          console.error('Failed to send error response:', sendError);
+        }
+      }
+    }
+  })
 }

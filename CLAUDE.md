@@ -33,11 +33,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `dataChannelToStream()` / `dataChannelToPostMessage()` - WebRTC DataChannel wrappers with readyState checking
 - `webSocketToPostMessage()` - WebSocket wrapper with JSON serialization and error handling
 
-**Remote Object API in `src/remoteObject.ts`** (planned implementation):
-- Cross-realm object manipulation, function calls, and class instantiation
-- Multiple serialization strategies (JSON, StructuredClone, Function strings, Object references)
-- Object reference management with garbage collection
-- Event system for remote object lifecycle tracking
+**Remote Object API in `src/remoteObject.ts`** (implemented):
+- `wrap(ep: PostMessageEndpoint)` - Creates a proxy object for remote function calls
+- `expose(obj: any, ep: PostMessageEndpoint)` - Exposes an object's methods for remote access
+- RPC-based communication with call/construct/await operations
+- Automatic argument serialization/deserialization with proxy unwrapping
+- Object reference management with `getId()` for tracking remote objects
 
 ### Library Design
 
@@ -50,10 +51,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Testing Strategy
 
 - **Unit tests** in `tests/unit/` - Individual function testing with mocked APIs
-- **Browser integration tests** - Real MessageChannel/MessagePort API testing in `tests/unit/browser-integration.test.ts`
-- **Web API tests** - DataChannel and WebSocket wrapper testing in `tests/unit/endpointWeb.test.ts`
+  - `endpoint.test.ts` - Core endpoint functions (55 tests)
+  - `remoteObject.test.ts` - Remote object RPC functionality (31 tests, 99.35% coverage)
+  - `browser-integration.test.ts` - Real MessageChannel/MessagePort API testing (8 tests)
+  - `endpointWeb.test.ts` - DataChannel and WebSocket wrapper testing (20 tests)
+  - `index.test.ts` - Module exports verification (12 tests)
+  - `types.test.ts` - Basic TypeScript type safety verification (23 tests)
+  - `advanced-types.test.ts` - Advanced TypeScript type testing with generics and inference (16 tests)
 - **E2E tests** in `tests/e2e/` - Full browser environment testing with Playwright
-- **Coverage target**: 90%+ with current 87.8% statement coverage
+- **Coverage target**: 90%+ with current 99.35% statement coverage on remoteObject module
 
 ### Implementation Notes
 
@@ -62,3 +68,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Error handling**: WebSocket wrapper includes JSON parsing error recovery with console warnings
 - **Resource management**: All communication functions return cleanup functions to prevent memory leaks
 - **Stream locking**: DataChannel wrapper uses single writer instance to avoid WritableStream lock conflicts
+- **RPC Implementation**: Remote object calls use structured message format with `id`, `type`, `keyChain`, and `args` fields
+- **Proxy unwrapping**: Arguments are automatically serialized/deserialized with proxy detection and unwrapping
+
+### Development Workflow
+
+When making changes to the library:
+1. Run unit tests: `npm run test:unit` to verify core functionality
+2. Run full test suite: `npm test` (includes async error handling - unhandled rejections are expected)
+3. Generate coverage report: `npm run test:unit -- --coverage`
+4. Build the library: `npm run build` (generates both ESM and UMD bundles)
+5. Run E2E tests: `npm run test:e2e` for full browser validation
+
+### Common Development Tasks
+
+- **Test a specific file**: `npm run test:unit -- tests/unit/remoteObject.test.ts`
+- **Run tests with coverage**: `npm run test:unit -- --coverage`
+- **Debug E2E tests**: `npm run test:e2e:ui` (opens Playwright UI)
+- **Start development server**: `npm run dev` (serves library on localhost:5173)
+- **Run type tests**: `npm run test:unit -- tests/unit/types.test.ts tests/unit/advanced-types.test.ts`
+- **Verify TypeScript compilation**: `npm run build` (tests strict mode compliance)

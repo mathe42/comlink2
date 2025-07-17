@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { streamToPostMessage, createChannel, postMessageToStream, connectEndpoints, PostMessageEndpoint, PostMessageEndpointString, StreamEndpoint } from '../../src/index'
+import { streamToPostMessage, createChannel, postMessageToStream, connectEndpoints, PostMessageEndpoint, PostMessageEndpointString, StreamEndpoint, wrap, expose } from '../../src/index'
 
 describe('streamToPostMessage', () => {
   it('should convert StreamEndpoint to PostMessageEndpoint', () => {
@@ -95,6 +95,16 @@ describe('postMessageToStream', () => {
 describe('connectEndpoints', () => {
   it('should be exported from index', () => {
     expect(typeof connectEndpoints).toBe('function')
+  })
+})
+
+describe('Remote Object exports', () => {
+  it('should export wrap function', () => {
+    expect(typeof wrap).toBe('function')
+  })
+
+  it('should export expose function', () => {
+    expect(typeof expose).toBe('function')
   })
 })
 

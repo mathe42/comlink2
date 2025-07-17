@@ -1,6 +1,7 @@
 {
   "name": "comlink2",
   "version": "1.0.0",
+  "type": "module",
   "main": "dist/comlink2.js",
   "module": "dist/comlink2.es.js",
   "types": "dist/index.d.ts",
@@ -14,7 +15,10 @@
     "test": "vitest",
     "test:unit": "vitest run tests/unit",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +32,7 @@
     "playwright": "^1.54.1",
     "typescript": "^5.8.3",
     "vite": "^7.0.4",
+    "vitepress": "^1.6.3",
     "vitest": "^3.2.4"
   }
 }
