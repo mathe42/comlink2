@@ -11,6 +11,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **E2E tests**: `npm run test:e2e` - Runs Playwright end-to-end tests
 - **E2E with UI**: `npm run test:e2e:ui` - Runs Playwright tests with interactive UI
 - **Dev server**: `npm run dev` - Starts Vite development server on port 5173
+- **Documentation**: 
+  - `npm run docs:dev` - Starts VitePress documentation dev server
+  - `npm run docs:build` - Builds static documentation
+  - `npm run docs:preview` - Previews built documentation
 
 ## Architecture
 
@@ -88,3 +92,31 @@ When making changes to the library:
 - **Start development server**: `npm run dev` (serves library on localhost:5173)
 - **Run type tests**: `npm run test:unit -- tests/unit/types.test.ts tests/unit/advanced-types.test.ts`
 - **Verify TypeScript compilation**: `npm run build` (tests strict mode compliance)
+- **Work with documentation**: `npm run docs:dev` (starts VitePress dev server for documentation)
+- **Build documentation**: `npm run docs:build` (creates static docs in `docs/.vitepress/dist/`)
+
+## Documentation
+
+The project uses **VitePress** for documentation, located in the `docs/` directory:
+
+### Structure
+- `docs/index.md` - Main documentation homepage
+- `docs/guide/` - User guides and tutorials
+- `docs/api/` - Complete API reference
+- `docs/examples/` - Code examples and patterns
+- `docs/.vitepress/config.ts` - VitePress configuration
+
+### Documentation Features
+- **Interactive examples** - Live code samples
+- **API reference** - Complete function signatures and types
+- **TypeScript support** - Full type documentation
+- **Search functionality** - Built-in search across all docs
+- **Responsive design** - Mobile-friendly documentation
+
+### Writing Documentation
+When adding new features or making changes:
+1. Update relevant guide pages in `docs/guide/`
+2. Update API reference in `docs/api/`
+3. Add examples in `docs/examples/`
+4. Test documentation locally with `npm run docs:dev`
+5. Build documentation with `npm run docs:build` to verify
