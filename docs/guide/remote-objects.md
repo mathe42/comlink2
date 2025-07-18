@@ -9,7 +9,7 @@ The Remote Object API provides a high-level interface for cross-realm object man
 Use `expose()` to make an object available remotely:
 
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 const api = {
   add(a: number, b: number) {
@@ -39,7 +39,7 @@ expose(api, self)
 Use `wrap()` to create a proxy for remote objects:
 
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('worker.js')
 const remoteApi = wrap(worker)

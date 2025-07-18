@@ -9,10 +9,10 @@ Simple getting started examples with PostMessage and Stream endpoints.
 Complete examples of Worker thread communication using Remote Objects.
 
 ### [WebSocket Integration](/examples/websocket)
-How to integrate WebSocket connections with comlink2.
+How to integrate WebSocket connections with objex.
 
 ### [WebRTC DataChannel](/examples/webrtc)
-Using WebRTC DataChannel with comlink2 for peer-to-peer communication.
+Using WebRTC DataChannel with objex for peer-to-peer communication.
 
 ### [Remote Object RPC](/examples/remote-object)
 Advanced Remote Object examples with functions, constructors, and error handling.

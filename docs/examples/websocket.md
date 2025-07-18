@@ -1,6 +1,6 @@
 # WebSocket Integration Examples
 
-Examples of integrating WebSocket connections with comlink2.
+Examples of integrating WebSocket connections with objex.
 
 ## Basic WebSocket Usage
 
@@ -8,7 +8,7 @@ Examples of integrating WebSocket connections with comlink2.
 
 **client.js**
 ```typescript
-import { webSocketToPostMessage, wrap } from 'comlink2'
+import { webSocketToPostMessage, wrap } from 'objex'
 
 const socket = new WebSocket('ws://localhost:8080')
 const endpoint = webSocketToPostMessage(socket)
@@ -34,7 +34,7 @@ socket.onclose = () => {
 **server.js (Node.js)**
 ```typescript
 import { WebSocketServer } from 'ws'
-import { webSocketToPostMessage, expose } from 'comlink2'
+import { webSocketToPostMessage, expose } from 'objex'
 
 const wss = new WebSocketServer({ port: 8080 })
 
@@ -65,7 +65,7 @@ console.log('WebSocket server running on ws://localhost:8080')
 
 **client.js**
 ```typescript
-import { webSocketToPostMessage, wrap } from 'comlink2'
+import { webSocketToPostMessage, wrap } from 'objex'
 
 const socket = new WebSocket('ws://localhost:8080')
 const endpoint = webSocketToPostMessage(socket)
@@ -92,7 +92,7 @@ socket.onopen = async () => {
 **server.js**
 ```typescript
 import { WebSocketServer } from 'ws'
-import { webSocketToPostMessage, expose } from 'comlink2'
+import { webSocketToPostMessage, expose } from 'objex'
 
 const chatRooms = new Map()
 const userSockets = new Map()
@@ -219,7 +219,7 @@ console.log('Chat server running on ws://localhost:8080')
 
 **client.js**
 ```typescript
-import { webSocketToPostMessage, wrap } from 'comlink2'
+import { webSocketToPostMessage, wrap } from 'objex'
 
 const socket = new WebSocket('ws://localhost:8080')
 const endpoint = webSocketToPostMessage(socket)
@@ -261,7 +261,7 @@ function addNewsItem(news) {
 **server.js**
 ```typescript
 import { WebSocketServer } from 'ws'
-import { webSocketToPostMessage, expose } from 'comlink2'
+import { webSocketToPostMessage, expose } from 'objex'
 
 const subscribers = new Map()
 const dataStreams = new Map()
@@ -401,7 +401,7 @@ console.log('Data feed server running on ws://localhost:8080')
 
 **client.js**
 ```typescript
-import { webSocketToPostMessage, wrap } from 'comlink2'
+import { webSocketToPostMessage, wrap } from 'objex'
 
 class SecureWebSocketClient {
   constructor(url) {
@@ -475,7 +475,7 @@ try {
 **server.js**
 ```typescript
 import { WebSocketServer } from 'ws'
-import { webSocketToPostMessage, expose } from 'comlink2'
+import { webSocketToPostMessage, expose } from 'objex'
 import jwt from 'jsonwebtoken'
 
 const SECRET_KEY = 'your-secret-key'
@@ -584,7 +584,7 @@ console.log('Secure WebSocket server running on ws://localhost:8080')
 ### Robust WebSocket Client
 
 ```typescript
-import { webSocketToPostMessage, wrap } from 'comlink2'
+import { webSocketToPostMessage, wrap } from 'objex'
 
 class RobustWebSocketClient {
   constructor(url, options = {}) {

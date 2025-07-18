@@ -20,7 +20,7 @@ function streamToPostMessage(stream: StreamEndpoint): PostMessageEndpoint
 
 **Example:**
 ```typescript
-import { streamToPostMessage } from 'comlink2'
+import { streamToPostMessage } from 'objex'
 
 const stream = {
   readable: new ReadableStream({
@@ -56,7 +56,7 @@ function postMessageToStream(endpoint: PostMessageEndpoint): StreamEndpoint
 
 **Example:**
 ```typescript
-import { postMessageToStream } from 'comlink2'
+import { postMessageToStream } from 'objex'
 
 const worker = new Worker('worker.js')
 const stream = postMessageToStream(worker)
@@ -82,7 +82,7 @@ function createChannel(endpoint: PostMessageEndpoint, channelId: string | number
 
 **Example:**
 ```typescript
-import { createChannel } from 'comlink2'
+import { createChannel } from 'objex'
 
 const worker = new Worker('worker.js')
 const dataChannel = createChannel(worker, 'data')
@@ -109,7 +109,7 @@ function connectEndpoints(endpoint1: PostMessageEndpoint, endpoint2: PostMessage
 
 **Example:**
 ```typescript
-import { connectEndpoints } from 'comlink2'
+import { connectEndpoints } from 'objex'
 
 const worker = new Worker('worker.js')
 const mainEndpoint = {
@@ -143,7 +143,7 @@ function connectStreams(stream1: StreamEndpoint, stream2: StreamEndpoint): () =>
 
 **Example:**
 ```typescript
-import { connectStreams } from 'comlink2'
+import { connectStreams } from 'objex'
 
 const stream1 = {
   readable: new ReadableStream({

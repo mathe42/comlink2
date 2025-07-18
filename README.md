@@ -1,8 +1,8 @@
-# comlink2
+# Objex
 
 A TypeScript communication library that provides standardized interfaces for cross-context communication using PostMessage APIs and Web Streams.
 
-[![npm version](https://badge.fury.io/js/comlink2.svg)](https://badge.fury.io/js/comlink2)
+[![npm version](https://badge.fury.io/js/objex.svg)](https://badge.fury.io/js/objex)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
@@ -20,7 +20,7 @@ A TypeScript communication library that provides standardized interfaces for cro
 ### Installation
 
 ```bash
-npm install comlink2
+npm install objex
 ```
 
 ### Basic Usage
@@ -29,7 +29,7 @@ npm install comlink2
 
 ```typescript
 // worker.js
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 const api = {
   add(a, b) {
@@ -46,7 +46,7 @@ expose(api, self)
 
 ```typescript
 // main.js
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('worker.js')
 const api = wrap(worker)
@@ -59,7 +59,7 @@ const data = await api.fetchData('/api/users')
 **PostMessage Endpoints**
 
 ```typescript
-import { connectEndpoints } from 'comlink2'
+import { connectEndpoints } from 'objex'
 
 const worker = new Worker('worker.js')
 const cleanup = connectEndpoints(worker, {
@@ -78,7 +78,7 @@ cleanup()
 **Stream Endpoints**
 
 ```typescript
-import { postMessageToStream } from 'comlink2'
+import { postMessageToStream } from 'objex'
 
 const worker = new Worker('worker.js')
 const stream = postMessageToStream(worker)
@@ -94,7 +94,7 @@ const { value } = await reader.read()
 
 ## Architecture
 
-comlink2 provides three main interface types:
+Objex provides three main interface types:
 
 ### 1. PostMessageEndpoint
 Event-driven communication interface compatible with native browser APIs:
@@ -114,7 +114,7 @@ High-level RPC API for cross-realm object manipulation with automatic serializat
 
 ### Endpoint Conversion
 ```typescript
-import { streamToPostMessage, postMessageToStream } from 'comlink2'
+import { streamToPostMessage, postMessageToStream } from 'objex'
 
 // Convert between interface types
 const pmEndpoint = streamToPostMessage(streamEndpoint)
@@ -123,7 +123,7 @@ const streamEndpoint = postMessageToStream(pmEndpoint)
 
 ### Channel Creation
 ```typescript
-import { createChannel } from 'comlink2'
+import { createChannel } from 'objex'
 
 // Create isolated communication channels
 const dataChannel = createChannel(worker, 'data')
@@ -132,7 +132,7 @@ const controlChannel = createChannel(worker, 'control')
 
 ### Connection Management
 ```typescript
-import { connectEndpoints, connectStreams } from 'comlink2'
+import { connectEndpoints, connectStreams } from 'objex'
 
 // Connect endpoints bidirectionally
 const cleanup1 = connectEndpoints(endpoint1, endpoint2)
@@ -143,7 +143,7 @@ const cleanup2 = connectStreams(stream1, stream2)
 
 ### WebSocket Integration
 ```typescript
-import { webSocketToPostMessage, wrap } from 'comlink2'
+import { webSocketToPostMessage, wrap } from 'objex'
 
 const socket = new WebSocket('ws://localhost:8080')
 const endpoint = webSocketToPostMessage(socket)
@@ -152,7 +152,7 @@ const api = wrap(endpoint)
 
 ### WebRTC DataChannel
 ```typescript
-import { dataChannelToPostMessage, dataChannelToStream } from 'comlink2'
+import { dataChannelToPostMessage, dataChannelToStream } from 'objex'
 
 const channel = pc.createDataChannel('my-channel')
 const endpoint = dataChannelToPostMessage(channel)
@@ -252,8 +252,8 @@ const sum: number = await calc.add(5, 3)
 
 ### Setup
 ```bash
-git clone https://github.com/your-username/comlink2.git
-cd comlink2
+git clone https://github.com/mathe42/objex.git
+cd objex
 npm install
 ```
 

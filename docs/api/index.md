@@ -2,7 +2,7 @@
 
 ## Overview
 
-comlink2 provides a modular API organized into three main modules:
+objex provides a modular API organized into three main modules:
 
 ## Core Modules
 
@@ -68,18 +68,18 @@ export {
 
 ### Import Everything
 ```typescript
-import * as comlink from 'comlink2'
+import * as objex from 'objex'
 ```
 
 ### Import Specific Functions
 ```typescript
-import { wrap, expose } from 'comlink2'
+import { wrap, expose } from 'objex'
 ```
 
 ### Import by Module
 ```typescript
-import { streamToPostMessage } from 'comlink2/endpoint'
-import { wrap } from 'comlink2/remoteObject'
+import { streamToPostMessage } from 'objex/endpoint'
+import { wrap } from 'objex/remoteObject'
 ```
 
 ## Next Steps

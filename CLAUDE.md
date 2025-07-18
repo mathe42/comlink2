@@ -18,7 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-**comlink2** is a TypeScript communication library that provides standardized interfaces for cross-context communication using PostMessage APIs and Web Streams.
+**objex** is a TypeScript communication library that provides standardized interfaces for cross-context communication using PostMessage APIs and Web Streams.
 
 ### Core Concepts
 
@@ -48,7 +48,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Zero dependencies** - Pure browser APIs only
 - **Modular exports** - Import only what you need from `src/index.ts`
-- **Bundle formats** - ESM (`dist/comlink2.es.js`) and UMD (`dist/comlink2.js`) builds via Vite
+- **Bundle formats** - ESM (`dist/objex.es.js`) and UMD (`dist/objex.js`) builds via Vite
 - **Type safety** - Full TypeScript support with generated `.d.ts` files
 - **Dual licensing** - MIT for non-commercial, €50/month for commercial use (5+ employees or €20k+ revenue)
 

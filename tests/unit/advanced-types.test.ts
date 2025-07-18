@@ -1,5 +1,5 @@
 /**
- * Advanced type tests for comlink2 library
+ * Advanced type tests for objex library
  * 
  * This file contains more sophisticated type tests including:
  * - Generic type parameter testing

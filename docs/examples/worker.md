@@ -1,6 +1,6 @@
 # Worker Communication Examples
 
-Complete examples of Worker thread communication using comlink2.
+Complete examples of Worker thread communication using objex.
 
 ## Basic Worker Communication
 
@@ -8,7 +8,7 @@ Complete examples of Worker thread communication using comlink2.
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('calculator-worker.js')
 const calc = wrap(worker)
@@ -23,7 +23,7 @@ console.log('Results:', { sum, product, result })
 
 **calculator-worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 const calculator = {
   add(a, b) {
@@ -49,7 +49,7 @@ expose(calculator, self)
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('data-worker.js')
 const dataProcessor = wrap(worker)
@@ -69,7 +69,7 @@ console.log('Processed users:', enrichedUsers)
 
 **data-worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 const dataProcessor = {
   filterActive(users) {
@@ -114,7 +114,7 @@ expose(dataProcessor, self)
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('event-worker.js')
 const eventProcessor = wrap(worker)
@@ -139,7 +139,7 @@ console.log('Event results:', results)
 
 **event-worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 const eventProcessor = {
   async processEvents(events, callback) {
@@ -181,7 +181,7 @@ expose(eventProcessor, self)
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('stateful-worker.js')
 const factory = wrap(worker)
@@ -209,7 +209,7 @@ const result = await calculator.result // 15
 
 **stateful-worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 const factory = {
   createCounter(initialValue = 0) {
@@ -283,7 +283,7 @@ expose(factory, self)
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('error-worker.js')
 const api = wrap(worker)
@@ -316,7 +316,7 @@ handleOperations()
 
 **error-worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 const api = {
   safeOperation(value) {
@@ -364,7 +364,7 @@ expose(api, self)
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('batch-worker.js')
 const processor = wrap(worker)
@@ -392,7 +392,7 @@ console.log('Results:', results2.length)
 
 **batch-worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 const processor = {
   processItem(item) {
@@ -447,7 +447,7 @@ export interface DataProcessorAPI {
 
 **main.ts**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 import { CalculatorAPI, DataProcessorAPI } from './types'
 
 const calcWorker = new Worker('calculator-worker.js')

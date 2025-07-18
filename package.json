@@ -1,9 +1,9 @@
 {
-  "name": "comlink2",
+  "name": "objex",
   "version": "1.0.0",
   "type": "module",
-  "main": "dist/comlink2.js",
-  "module": "dist/comlink2.es.js",
+  "main": "dist/objex.js",
+  "module": "dist/objex.es.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"

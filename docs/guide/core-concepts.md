@@ -2,7 +2,7 @@
 
 ## Three Interface Types
 
-comlink2 provides three main interface types for different communication needs:
+objex provides three main interface types for different communication needs:
 
 ### PostMessageEndpoint
 
@@ -48,7 +48,7 @@ const result = await remoteApi.someMethod(args)
 Convert between interface types:
 
 ```typescript
-import { streamToPostMessage, postMessageToStream } from 'comlink2'
+import { streamToPostMessage, postMessageToStream } from 'objex'
 
 // Convert stream to PostMessage
 const pmEndpoint = streamToPostMessage(streamEndpoint)
@@ -62,7 +62,7 @@ const streamEndpoint = postMessageToStream(pmEndpoint)
 Create isolated communication channels:
 
 ```typescript
-import { createChannel } from 'comlink2'
+import { createChannel } from 'objex'
 
 const channel1 = createChannel(endpoint, 'channel1')
 const channel2 = createChannel(endpoint, 'channel2')
@@ -74,7 +74,7 @@ const channel2 = createChannel(endpoint, 'channel2')
 Establish bidirectional communication:
 
 ```typescript
-import { connectEndpoints, connectStreams } from 'comlink2'
+import { connectEndpoints, connectStreams } from 'objex'
 
 // Connect two PostMessage endpoints
 const cleanup1 = connectEndpoints(endpoint1, endpoint2)
@@ -96,7 +96,7 @@ cleanup()
 
 ## Error Handling
 
-comlink2 includes built-in error handling:
+objex includes built-in error handling:
 
 ```typescript
 try {

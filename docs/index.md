@@ -1,4 +1,4 @@
-# comlink2
+# Objex
 
 A TypeScript communication library that provides standardized interfaces for cross-context communication using PostMessage APIs and Web Streams.
 
@@ -16,7 +16,7 @@ A TypeScript communication library that provides standardized interfaces for cro
 ## Quick Start
 
 ```typescript
-import { wrap, expose } from 'comlink2'
+import { wrap, expose } from 'objex'
 
 // In main thread
 const worker = new Worker('worker.js')
@@ -35,7 +35,7 @@ expose(calculator, self)
 ## Installation
 
 ```bash
-npm install comlink2
+npm install objex
 ```
 
 ## Get Started

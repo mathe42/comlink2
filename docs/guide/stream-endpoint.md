@@ -18,7 +18,7 @@ interface StreamEndpoint {
 Convert a PostMessage endpoint to a Stream endpoint:
 
 ```typescript
-import { postMessageToStream } from 'comlink2'
+import { postMessageToStream } from 'objex'
 
 const worker = new Worker('worker.js')
 const stream = postMessageToStream(worker)
@@ -39,7 +39,7 @@ console.log('Received:', value)
 Convert a Stream endpoint to a PostMessage endpoint:
 
 ```typescript
-import { streamToPostMessage } from 'comlink2'
+import { streamToPostMessage } from 'objex'
 
 // Create a stream endpoint
 const stream = {
@@ -71,7 +71,7 @@ endpoint.addEventListener('message', (event) => {
 Connect two stream endpoints bidirectionally:
 
 ```typescript
-import { connectStreams } from 'comlink2'
+import { connectStreams } from 'objex'
 
 const stream1 = {
   readable: new ReadableStream({
@@ -113,7 +113,7 @@ const cleanup = connectStreams(stream1, stream2)
 Use transform streams for data processing:
 
 ```typescript
-import { postMessageToStream } from 'comlink2'
+import { postMessageToStream } from 'objex'
 
 const worker = new Worker('worker.js')
 const stream = postMessageToStream(worker)
@@ -148,7 +148,7 @@ console.log('Transformed data:', value)
 Streams automatically handle backpressure:
 
 ```typescript
-import { postMessageToStream } from 'comlink2'
+import { postMessageToStream } from 'objex'
 
 const worker = new Worker('worker.js')
 const stream = postMessageToStream(worker)
@@ -171,7 +171,7 @@ try {
 Combine multiple streams:
 
 ```typescript
-import { connectStreams } from 'comlink2'
+import { connectStreams } from 'objex'
 
 // Create processing pipeline
 const inputStream = new ReadableStream({
@@ -217,7 +217,7 @@ const cleanup = connectStreams(pipeline, output)
 ### Stream Error Propagation
 
 ```typescript
-import { postMessageToStream } from 'comlink2'
+import { postMessageToStream } from 'objex'
 
 const worker = new Worker('worker.js')
 const stream = postMessageToStream(worker)

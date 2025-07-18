@@ -26,7 +26,7 @@ function webSocketToPostMessage(socket: WebSocket): PostMessageEndpoint
 
 **Example:**
 ```typescript
-import { webSocketToPostMessage } from 'comlink2'
+import { webSocketToPostMessage } from 'objex'
 
 const socket = new WebSocket('ws://localhost:8080')
 const endpoint = webSocketToPostMessage(socket)
@@ -60,7 +60,7 @@ function dataChannelToPostMessage(channel: RTCDataChannel): PostMessageEndpoint
 
 **Example:**
 ```typescript
-import { dataChannelToPostMessage } from 'comlink2'
+import { dataChannelToPostMessage } from 'objex'
 
 const pc = new RTCPeerConnection()
 const channel = pc.createDataChannel('my-channel')
@@ -95,7 +95,7 @@ function dataChannelToStream(channel: RTCDataChannel): StreamEndpoint
 
 **Example:**
 ```typescript
-import { dataChannelToStream } from 'comlink2'
+import { dataChannelToStream } from 'objex'
 
 const pc = new RTCPeerConnection()
 const channel = pc.createDataChannel('stream-channel')
@@ -187,7 +187,7 @@ if (!writer) {
 ### WebSocket Errors
 
 ```typescript
-import { webSocketToPostMessage } from 'comlink2'
+import { webSocketToPostMessage } from 'objex'
 
 const socket = new WebSocket('ws://localhost:8080')
 
@@ -205,7 +205,7 @@ const endpoint = webSocketToPostMessage(socket)
 ### DataChannel Errors
 
 ```typescript
-import { dataChannelToPostMessage } from 'comlink2'
+import { dataChannelToPostMessage } from 'objex'
 
 const pc = new RTCPeerConnection()
 const channel = pc.createDataChannel('my-channel')
@@ -228,7 +228,7 @@ const endpoint = dataChannelToPostMessage(channel)
 Override JSON serialization for WebSocket:
 
 ```typescript
-import { webSocketToPostMessage } from 'comlink2'
+import { webSocketToPostMessage } from 'objex'
 
 const socket = new WebSocket('ws://localhost:8080')
 
@@ -254,7 +254,7 @@ const customEndpoint = {
 Complete WebRTC setup with DataChannel:
 
 ```typescript
-import { dataChannelToPostMessage, wrap, expose } from 'comlink2'
+import { dataChannelToPostMessage, wrap, expose } from 'objex'
 
 // Peer 1 (Initiator)
 const pc1 = new RTCPeerConnection()

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>comlink2 API Playground</title>
+  <title>objex API Playground</title>
   
   <script type="module">
     import { 
@@ -17,6 +17,14 @@
       withLogging
     } from './src/index.js';
 
+    class bbb {
+      
+        fn() {
+          console.log('test')
+        }
+    }
+
+    class ccc extends bbb {}
 
     // Service der exposed wird
     const testService = {
@@ -39,9 +47,11 @@
           created: new Date().toISOString() 
         }
       },
-      a: class {
-        fn() {
-          console.log('test')
+      a: class A extends ccc{
+        a = () => 42
+        static __con() {
+          const _ = new A()
+          return _
         }
         cb(c) {
           c()
@@ -61,21 +71,50 @@
     // Oder mit async/await:
     ;(async () => {
       try {
-        const greeting = await d.greet('Sebastian')
-        console.log('Async greet result:', greeting)
+        const c = await d.a;
+        console.log('c', c)
+        const i = await new c()
+        console.log('i', i)
+        await i.fn()
+        // window.p = new Proxy(class {}, {
+        //   construct() {
+        //     return new Proxy(class {})
+        //   }
+        // })
+
+        // (await d.a.__con()).fn()
+
+
+        const p = () => {
+          return new Proxy(class {}, {
+            construct(r, args) {
+              return Promise.resolve().then(() => p())
+            }
+          })
+        }
+
+        window.p = p
+
+
+        // const greeting = await d.greet('Sebastian')
+        // console.log('Async greet result:', greeting)
         
-        const sum = await d.calculate(5, 3)
-        console.log('Calculate result:', sum)
+        // const sum = await d.calculate(5, 3)
+        // console.log('Calculate result:', sum)
         
-        const data = await d.getData()
-        console.log('Data result:', data)
+        // const data = await d.getData()
+        // console.log('Data result:', data)
         
-        const g = await d.greet
-        console.log(g())
+        // console.log('before await')
+        // const g = await d.greet
+        // console.log('after wrap')
+        // console.log(await g('fjfj'))
+        // console.log('after call')
 
         // Class Test
-        // const instance = await new d.a()
-        // await instance.fn()
+        // const instance = await (new (await d.a)())
+        // console.log(instance)
+        // instance.fn()
         // console.log('Class instance:', instance)
 
         // instance.cb(() => console.log('dhgdhg'))

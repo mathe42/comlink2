@@ -8,7 +8,7 @@ Advanced examples of using the Remote Object API for cross-realm communication.
 
 **worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 const mathAPI = {
   add(a, b) {
@@ -36,7 +36,7 @@ expose(mathAPI, self)
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('worker.js')
 const math = wrap(worker)
@@ -54,7 +54,7 @@ console.log({ sum, product, fact, async_result })
 
 **worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 class Counter {
   constructor(initialValue = 0) {
@@ -100,7 +100,7 @@ expose(api, self)
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('worker.js')
 const api = wrap(worker)
@@ -127,7 +127,7 @@ const version = await api.config.version // '1.0.0'
 
 **worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 const dataProcessor = {
   processArray(items, callback) {
@@ -157,7 +157,7 @@ expose(dataProcessor, self)
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('worker.js')
 const processor = wrap(worker)
@@ -189,7 +189,7 @@ console.log('Sum:', sum) // 15
 
 **worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 const serviceAPI = {
   processUser(user, actions) {
@@ -224,7 +224,7 @@ expose(serviceAPI, self)
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('worker.js')
 const service = wrap(worker)
@@ -264,7 +264,7 @@ console.log('Saved data:', saveResult)
 
 **worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 class Calculator {
   constructor(initialValue = 0) {
@@ -366,7 +366,7 @@ expose(api, self)
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('worker.js')
 const api = wrap(worker)
@@ -393,7 +393,7 @@ console.log('Calculator 2:', { result: result2 })
 const TaskManagerClass = api.TaskManager
 const taskManager = await new TaskManagerClass()
 
-const task1 = await taskManager.addTask('Learn comlink2', 'Study the documentation')
+const task1 = await taskManager.addTask('Learn objex', 'Study the documentation')
 const task2 = await taskManager.addTask('Build app', 'Create the application')
 
 await taskManager.completeTask(task1.id)
@@ -408,7 +408,7 @@ console.log('All tasks:', allTasks)
 
 **worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 class ValidationError extends Error {
   constructor(message, field) {
@@ -466,7 +466,7 @@ expose(userService, self)
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('worker.js')
 const userService = wrap(worker)
@@ -521,7 +521,7 @@ await handleRiskyOperations()
 
 **worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 class DataService {
   constructor() {
@@ -639,7 +639,7 @@ expose(new DataService(), self)
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('worker.js')
 const dataService = wrap(worker)
@@ -704,7 +704,7 @@ demonstratePerformance()
 
 **worker.js**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 class DatabaseService {
   constructor() {
@@ -784,7 +784,7 @@ expose(db, self)
 
 **main.js**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('worker.js')
 const db = wrap(worker)
@@ -807,7 +807,7 @@ async function demonstrateNestedObjects() {
     userId: user1.id 
   })
   const post2 = await posts.insert({ 
-    title: 'Learning comlink2', 
+    title: 'Learning objex', 
     content: 'Remote objects are cool', 
     userId: user1.id 
   })

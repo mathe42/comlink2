@@ -1,6 +1,6 @@
 # PostMessage Endpoint
 
-The PostMessage Endpoint is the core interface for event-driven communication in comlink2. It's compatible with native browser APIs like Worker, MessagePort, BroadcastChannel, and more.
+The PostMessage Endpoint is the core interface for event-driven communication in objex. It's compatible with native browser APIs like Worker, MessagePort, BroadcastChannel, and more.
 
 ## Interface
 
@@ -51,7 +51,7 @@ navigator.serviceWorker.controller // implements PostMessageEndpoint
 Connect two PostMessage endpoints bidirectionally:
 
 ```typescript
-import { connectEndpoints } from 'comlink2'
+import { connectEndpoints } from 'objex'
 
 const worker = new Worker('worker.js')
 const mainEndpoint = {
@@ -75,7 +75,7 @@ const cleanup = connectEndpoints(worker, mainEndpoint)
 Create isolated communication channels over a shared endpoint:
 
 ```typescript
-import { createChannel } from 'comlink2'
+import { createChannel } from 'objex'
 
 const worker = new Worker('worker.js')
 
@@ -138,7 +138,7 @@ class CustomEndpoint implements PostMessageEndpoint {
 ### Error Handling
 
 ```typescript
-import { connectEndpoints } from 'comlink2'
+import { connectEndpoints } from 'objex'
 
 const worker = new Worker('worker.js')
 
@@ -169,7 +169,7 @@ const cleanup = connectEndpoints(worker, endpoint)
 ### Message Filtering
 
 ```typescript
-import { createChannel } from 'comlink2'
+import { createChannel } from 'objex'
 
 const worker = new Worker('worker.js')
 

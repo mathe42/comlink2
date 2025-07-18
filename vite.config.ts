@@ -5,8 +5,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'Comlink2',
-      fileName: 'comlink2'
+      name: 'objex',
+      fileName: 'objex'
     },
     rollupOptions: {
       external: [],

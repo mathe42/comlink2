@@ -1,5 +1,5 @@
 /**
- * Type tests for comlink2 library
+ * Type tests for objex library
  * 
  * This file contains comprehensive type tests to ensure type safety
  * and proper TypeScript declarations for all exported types and functions.

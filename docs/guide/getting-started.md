@@ -2,22 +2,22 @@
 
 ## Installation
 
-Install comlink2 via npm:
+Install objex via npm:
 
 ```bash
-npm install comlink2
+npm install objex
 ```
 
 ## Basic Usage
 
-comlink2 provides three main ways to communicate across contexts:
+objex provides three main ways to communicate across contexts:
 
 ### 1. Remote Objects (Recommended)
 
 The easiest way to get started is with remote objects:
 
 ```typescript
-import { wrap, expose } from 'comlink2'
+import { wrap, expose } from 'objex'
 
 // Worker thread (worker.js)
 const api = {
@@ -46,7 +46,7 @@ const data = await remoteApi.fetchData('/api/data')
 For more control over message handling:
 
 ```typescript
-import { connectEndpoints } from 'comlink2'
+import { connectEndpoints } from 'objex'
 
 const worker = new Worker('worker.js')
 const cleanup = connectEndpoints(worker, {
@@ -70,7 +70,7 @@ cleanup()
 For stream-based communication:
 
 ```typescript
-import { streamToPostMessage, postMessageToStream } from 'comlink2'
+import { streamToPostMessage, postMessageToStream } from 'objex'
 
 const worker = new Worker('worker.js')
 const stream = postMessageToStream(worker)

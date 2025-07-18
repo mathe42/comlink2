@@ -1,6 +1,6 @@
 # Web API Adapters
 
-comlink2 includes adapters for integrating with various Web APIs, making it easy to use WebSocket, WebRTC DataChannel, and other communication mechanisms with the unified interface.
+objex includes adapters for integrating with various Web APIs, making it easy to use WebSocket, WebRTC DataChannel, and other communication mechanisms with the unified interface.
 
 ## WebSocket Adapter
 
@@ -9,7 +9,7 @@ comlink2 includes adapters for integrating with various Web APIs, making it easy
 Convert a WebSocket to a PostMessage endpoint:
 
 ```typescript
-import { webSocketToPostMessage } from 'comlink2'
+import { webSocketToPostMessage } from 'objex'
 
 const socket = new WebSocket('ws://localhost:8080')
 const endpoint = webSocketToPostMessage(socket)
@@ -32,7 +32,7 @@ endpoint.addEventListener('message', (event) => {
 ### WebSocket Example
 
 ```typescript
-import { webSocketToPostMessage, wrap } from 'comlink2'
+import { webSocketToPostMessage, wrap } from 'objex'
 
 // Client side
 const socket = new WebSocket('ws://localhost:8080')
@@ -44,7 +44,7 @@ const result = await serverApi.processData({ userId: 123 })
 
 // Server side (Node.js with ws library)
 import { WebSocketServer } from 'ws'
-import { webSocketToPostMessage, expose } from 'comlink2'
+import { webSocketToPostMessage, expose } from 'objex'
 
 const wss = new WebSocketServer({ port: 8080 })
 
@@ -72,7 +72,7 @@ wss.on('connection', (ws) => {
 Convert a WebRTC DataChannel to a PostMessage endpoint:
 
 ```typescript
-import { dataChannelToPostMessage } from 'comlink2'
+import { dataChannelToPostMessage } from 'objex'
 
 // Create peer connection and data channel
 const pc = new RTCPeerConnection()
@@ -93,7 +93,7 @@ endpoint.addEventListener('message', (event) => {
 Convert a WebRTC DataChannel to a Stream endpoint:
 
 ```typescript
-import { dataChannelToStream } from 'comlink2'
+import { dataChannelToStream } from 'objex'
 
 const pc = new RTCPeerConnection()
 const channel = pc.createDataChannel('stream-channel')
@@ -120,7 +120,7 @@ console.log('Stream data:', value)
 ### P2P Communication Example
 
 ```typescript
-import { dataChannelToPostMessage, wrap, expose } from 'comlink2'
+import { dataChannelToPostMessage, wrap, expose } from 'objex'
 
 // Peer 1
 const pc1 = new RTCPeerConnection()
@@ -168,7 +168,7 @@ pc2.ondatachannel = (event) => {
 You can create adapters for other communication mechanisms:
 
 ```typescript
-import { PostMessageEndpoint } from 'comlink2'
+import { PostMessageEndpoint } from 'objex'
 
 function customTransportToPostMessage(transport: CustomTransport): PostMessageEndpoint {
   const listeners: ((event: MessageEvent) => void)[] = []
@@ -243,7 +243,7 @@ function eventSourceToPostMessage(eventSource: EventSource): PostMessageEndpoint
 ### WebSocket Error Handling
 
 ```typescript
-import { webSocketToPostMessage } from 'comlink2'
+import { webSocketToPostMessage } from 'objex'
 
 const socket = new WebSocket('ws://localhost:8080')
 
@@ -270,7 +270,7 @@ endpoint.addEventListener('message', (event) => {
 ### DataChannel Error Handling
 
 ```typescript
-import { dataChannelToPostMessage } from 'comlink2'
+import { dataChannelToPostMessage } from 'objex'
 
 const pc = new RTCPeerConnection()
 const channel = pc.createDataChannel('my-channel')

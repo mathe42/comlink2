@@ -5,7 +5,7 @@ function assertValidKeyChain(keyChain: unknown): asserts keyChain is string[] {
   if (!Array.isArray(keyChain)) {
     throw new Error('Invalid keyChain: must be an array');
   }
-  
+
   if (keyChain.some(key => typeof key !== 'string' || key.includes('__proto__') || key.includes('prototype') || key.includes('constructor'))) {
     throw new Error('Invalid keyChain: contains unsafe property names');
   }
@@ -15,14 +15,14 @@ function assertValidRPCCall(data: unknown): asserts data is sRPCCall {
   if (!data || typeof data !== 'object') {
     throw new Error('Invalid RPC call: not an object');
   }
-  
+
   const d = data as any;
   if (typeof d.id === 'undefined' || !d.type) {
     throw new Error('Invalid RPC call: missing id or type');
   }
-  
+
   assertValidKeyChain(d.keyChain);
-  
+
   if ((d.type === 'call' || d.type === 'construct') && !Array.isArray(d.args)) {
     throw new Error('Invalid RPC call: args must be an array');
   }
@@ -32,7 +32,7 @@ function assertValidRPCResponse(data: unknown): asserts data is sRPCResponse {
   if (!data || typeof data !== 'object') {
     throw new Error('Invalid RPC response: not an object');
   }
-  
+
   const d = data as any;
   if (typeof d.id === 'undefined' || d.type !== 'response') {
     throw new Error('Invalid RPC response: missing id or invalid type');
@@ -49,10 +49,20 @@ function assertPropertyExists(obj: any, property: string): void {
   if (!obj || typeof obj !== 'object') {
     throw new Error(`Cannot access property '${property}' on non-object`);
   }
-  
-  if (!Object.prototype.hasOwnProperty.call(obj, property)) {
-    throw new Error(`Property '${property}' not found or not accessible`);
+
+  let base = obj;
+
+  for (let i = 0; i < 100; i++) {
+    if (base) {
+      if (Object.prototype.hasOwnProperty.call(base ?? {}, property)) {
+        return
+      }
+      base = Reflect.getPrototypeOf(base);
+    } else {
+      throw new Error(`Property '${property}' not found or not accessible`);    
+    }
   }
+  throw new Error(`Loop stopped too much inherits`);
 }
 
 type sRPCData = { type: 'any', data: any } | { type: 'wraped', id: string | number };
@@ -120,9 +130,9 @@ function unwrapArg(data: sRPCData, ep: PostMessageEndpoint) {
     const id = data.id
 
     const channelEp = createChannel(ep, id)
+    console.log('before wrap')
     return wrap(channelEp)
   }
-
 }
 
 const promiseMap = new Map<number | string, { res: (data: any) => void, rej: (err: any) => void }>()
@@ -132,13 +142,14 @@ function createPromise(id: number | string) {
   })
 }
 
-export function wrap(ep: PostMessageEndpoint) {
+export function wrap(ep: PostMessageEndpoint, withClass = true) {
+  console.log('wrap')
   ep.addEventListener('message', ev => {
     if (ev.data && !ev.data.channel) {
       try {
         // Das ist für mich
         assertValidRPCResponse(ev.data);
-        const d: sRPCResponse =   ev.data
+        const d: sRPCResponse = ev.data
 
         const res = unwrapArg(d.data, ep)
         const p = promiseMap.get(d.id)
@@ -154,13 +165,19 @@ export function wrap(ep: PostMessageEndpoint) {
   })
 
 
-  function createProxy(keyChain: string[] = []) {
+
+  function createProxy(keyChain: string[] = [], withClass = true) {
+    console.log('proxy!', keyChain)
     const getters = new Map<string, any>()
 
     return new Proxy(class { }, {
       get(_, p) {
         if (typeof p === 'symbol') {
           return null;
+        }
+
+        if (keyChain.length == 0 && p == 'then') {
+          return undefined;
         }
 
         return mapHelper(getters, p, () => createProxy([...keyChain, p]))
@@ -193,7 +210,7 @@ export function wrap(ep: PostMessageEndpoint) {
     })
   }
 
-  return createProxy()
+  return createProxy([], withClass)
 }
 
 function getKeyChain(obj: any, keyChain: string[]) {

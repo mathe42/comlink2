@@ -5,7 +5,7 @@ import type { PostMessageEndpoint, StreamEndpoint } from './endpoint'
  * 
  * This module provides adapters to convert different Web APIs into
  * standardized PostMessageEndpoint or StreamEndpoint interfaces,
- * enabling seamless integration with the comlink2 ecosystem.
+ * enabling seamless integration with the objex ecosystem.
  * 
  * @example
  * ```typescript

@@ -1,6 +1,6 @@
 # WebRTC DataChannel Examples
 
-Examples of using WebRTC DataChannel with comlink2 for peer-to-peer communication.
+Examples of using WebRTC DataChannel with objex for peer-to-peer communication.
 
 ## Basic P2P Communication
 
@@ -8,7 +8,7 @@ Examples of using WebRTC DataChannel with comlink2 for peer-to-peer communicatio
 
 **peer1.js**
 ```typescript
-import { dataChannelToPostMessage, wrap, expose } from 'comlink2'
+import { dataChannelToPostMessage, wrap, expose } from 'objex'
 
 class Peer1 {
   constructor() {
@@ -91,7 +91,7 @@ console.log('Offer created:', offer)
 
 **peer2.js**
 ```typescript
-import { dataChannelToPostMessage, wrap, expose } from 'comlink2'
+import { dataChannelToPostMessage, wrap, expose } from 'objex'
 
 class Peer2 {
   constructor() {
@@ -167,7 +167,7 @@ console.log('Answer created:', answer)
 
 **game-peer.js**
 ```typescript
-import { dataChannelToPostMessage, wrap, expose } from 'comlink2'
+import { dataChannelToPostMessage, wrap, expose } from 'objex'
 
 class GamePeer {
   constructor(isHost = false) {
@@ -318,7 +318,7 @@ await guestPeer.initialize('player2')
 
 **file-sender.js**
 ```typescript
-import { dataChannelToPostMessage, wrap, expose } from 'comlink2'
+import { dataChannelToPostMessage, wrap, expose } from 'objex'
 
 class FileSender {
   constructor() {
@@ -427,7 +427,7 @@ fileInput.addEventListener('change', async (event) => {
 
 **file-receiver.js**
 ```typescript
-import { dataChannelToPostMessage, wrap, expose } from 'comlink2'
+import { dataChannelToPostMessage, wrap, expose } from 'objex'
 
 class FileReceiver {
   constructor() {
@@ -532,7 +532,7 @@ await fileReceiver.initialize()
 ### DataChannel Streams
 
 ```typescript
-import { dataChannelToStream, connectStreams } from 'comlink2'
+import { dataChannelToStream, connectStreams } from 'objex'
 
 class StreamingPeer {
   constructor() {
@@ -601,7 +601,7 @@ class StreamingPeer {
 ### Multi-channel Communication
 
 ```typescript
-import { dataChannelToPostMessage, wrap, expose } from 'comlink2'
+import { dataChannelToPostMessage, wrap, expose } from 'objex'
 
 class MultiChannelPeer {
   constructor() {
@@ -682,7 +682,7 @@ class MultiChannelPeer {
 ## Error Handling and Reconnection
 
 ```typescript
-import { dataChannelToPostMessage, wrap, expose } from 'comlink2'
+import { dataChannelToPostMessage, wrap, expose } from 'objex'
 
 class RobustP2PPeer {
   constructor() {

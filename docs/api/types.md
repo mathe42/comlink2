@@ -1,6 +1,6 @@
 # Types Reference
 
-Core TypeScript interfaces and types used throughout comlink2.
+Core TypeScript interfaces and types used throughout objex.
 
 ## Core Interfaces
 

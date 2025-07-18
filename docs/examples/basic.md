@@ -5,7 +5,7 @@
 ### Simple Message Exchange
 
 ```typescript
-import { connectEndpoints } from 'comlink2'
+import { connectEndpoints } from 'objex'
 
 // Create message channels
 const channel = new MessageChannel()
@@ -32,7 +32,7 @@ cleanup()
 
 ```typescript
 // main.js
-import { connectEndpoints } from 'comlink2'
+import { connectEndpoints } from 'objex'
 
 const worker = new Worker('worker.js')
 
@@ -56,7 +56,7 @@ worker.postMessage({ type: 'start', data: 'Begin processing' })
 
 ```typescript
 // worker.js
-import { connectEndpoints } from 'comlink2'
+import { connectEndpoints } from 'objex'
 
 // Connect to main thread
 const cleanup = connectEndpoints(self, {
@@ -87,7 +87,7 @@ self.addEventListener('message', (event) => {
 ### Stream Conversion
 
 ```typescript
-import { postMessageToStream, streamToPostMessage } from 'comlink2'
+import { postMessageToStream, streamToPostMessage } from 'objex'
 
 const worker = new Worker('worker.js')
 
@@ -108,7 +108,7 @@ console.log('Received:', value)
 ### Stream Pipeline
 
 ```typescript
-import { connectStreams } from 'comlink2'
+import { connectStreams } from 'objex'
 
 // Create transform stream
 const transformer = new TransformStream({
@@ -150,7 +150,7 @@ const cleanup = connectStreams(
 ### Isolated Channels
 
 ```typescript
-import { createChannel } from 'comlink2'
+import { createChannel } from 'objex'
 
 const worker = new Worker('worker.js')
 
@@ -178,7 +178,7 @@ controlChannel.addEventListener('message', (event) => {
 
 ```typescript
 // worker.js
-import { createChannel } from 'comlink2'
+import { createChannel } from 'objex'
 
 // Create matching channels
 const dataChannel = createChannel(self, 'data')
@@ -205,7 +205,7 @@ controlChannel.addEventListener('message', (event) => {
 ### Robust Message Handling
 
 ```typescript
-import { connectEndpoints } from 'comlink2'
+import { connectEndpoints } from 'objex'
 
 const worker = new Worker('worker.js')
 

@@ -20,7 +20,7 @@ function wrap(endpoint: PostMessageEndpoint): any
 
 **Example:**
 ```typescript
-import { wrap } from 'comlink2'
+import { wrap } from 'objex'
 
 const worker = new Worker('worker.js')
 const remoteApi = wrap(worker)
@@ -47,7 +47,7 @@ function expose(obj: any, endpoint: PostMessageEndpoint): void
 
 **Example:**
 ```typescript
-import { expose } from 'comlink2'
+import { expose } from 'objex'
 
 const api = {
   calculate(a, b) {
